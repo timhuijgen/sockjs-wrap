@@ -22,10 +22,15 @@
   "author": {
     "name": "Tim Huijgen",
     "email": "timhuijgen@gmail.com"  
-  }
+  },
   "license": "TIM",
   "dependencies": {
     "eventemitter3": "latest",
     "browserify": "latest"
+  },
+  "repository" :
+  {
+    "type" : "git",
+    "url" : "https://github.com/timhuijgen/sockjs-wrap.git"
   }
 }
