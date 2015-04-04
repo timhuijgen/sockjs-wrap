@@ -7,5 +7,6 @@ Connection.on('connection', function(){
 });
 
 Connection.start({
-    port: 9876
+    port: 9876,
+    sockjs_path: '/echo'
 });
