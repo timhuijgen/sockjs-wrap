@@ -1,0 +1,31 @@
+{
+  "name": "sockjs-wrap",
+  "version": "1.0.0",
+  "description": "Wrapper for SockJS NodeJs server and Client - Add events, and client callbacks. Client works with browserify.",
+  "main": "index.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "sockjs",
+    "event",
+    "node",
+    "js",
+    "wrap",
+    "wrapper",
+    "callback",
+    "events"
+  ],
+  "author": {
+    "name": "Tim Huijgen",
+    "email": "timhuijgen@gmail.com"  
+  }
+  "license": "TIM",
+  "dependencies": {
+    "eventemitter3": "latest",
+    "browserify": "latest"
+  }
+}
