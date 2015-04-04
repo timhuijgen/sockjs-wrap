@@ -16,7 +16,7 @@ function Connection() {
      *
      * @type {boolean}
      */
-    this.require_authentication = true;
+    this.require_authentication = false;
 
     this._connections = {};
     this._pending_connections = {};

@@ -1,11 +1,13 @@
 SockJs-Wrap
 ===========
-A simple SockJS wrapper for Node. 
+A simple SockJS wrapper for Node.
+
     * Client callbacks and custom data events. 
     * Authentication of clients, and keeping track of them. 
     * Send, broadcast and broadcastTo functionality. 
     * The server and client are both made the Node way.
-    * Using browser and server compatible Event module EventEmitter3
+    * Using browser and server compatible Event module EventEmitter3]
+    
 In order to use the client you will have to compile it with [Browserify.](https://github.com/substack/node-browserify)
 
 How to use
@@ -69,7 +71,11 @@ Authentication example
 ======================
 This is a simplified version of how the authentication process works. Full example in the examples folder.
 ```javascript
-... Start the servers and everything else ...
+... Start the http servers and everything else ...
+
+Connection.require_authentication = true;
+
+Connection.start(Sockjs_echo);
 
 Connection.on('authenticate', function(data, callback){
     // Fetch your user from DB or memory on data.token
