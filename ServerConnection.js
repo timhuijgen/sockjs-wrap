@@ -6,19 +6,18 @@ var EventEmitter = require('eventemitter3').EventEmitter;
 var Util         = require('util');
 
 /**
- *  Define if the connection needs to be authenticated by the client
- *  If this is not the case, the connection ID will be used instead
- *
- * @type {boolean}
- */
-
-var require_authentication = true;
-
-/**
  * @constructor
  */
 
 function Connection() {
+    /**
+     *  Define if the connection needs to be authenticated by the client
+     *  If this is not the case, the connection ID will be used instead
+     *
+     * @type {boolean}
+     */
+    this.require_authentication = true;
+
     this._connections = {};
     this._pending_connections = {};
     this._sockjs;
@@ -142,7 +141,7 @@ Connection.prototype.authenticate = function (connection_id, user) {
  */
 
 Connection.prototype.onConnect = function(client) {
-    if (!require_authentication && !client.hasOwnProperty('user_id')) {
+    if (!this.require_authentication && !client.hasOwnProperty('user_id')) {
         client.user_id = client.id;
     }
 }

@@ -62,7 +62,7 @@ Connection.prototype.start = function (options) {
 
     // Handle connection open event
     this._sockjs.onopen = function () {
-        self.emit('connection');
+        self.emit('connect');
     };
 
     // Handle connection closed event

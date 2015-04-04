@@ -1,13 +1,15 @@
 {
   "name": "sockjs-wrap",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Wrapper for SockJS NodeJs server and Client - Add events, and client callbacks. Client works with browserify.",
   "main": "index.js",
   "directories": {
     "example": "examples"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install": "browserify examples/simple/simple-client.js > examples/simple/browserified-simple-client.js"
   },
   "keywords": [
     "sockjs",
@@ -25,6 +27,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "sockjs": "latest",
     "eventemitter3": "latest",
     "browserify": "latest"
   },
@@ -32,5 +35,9 @@
   [{
     "type" : "git",
     "url" : "https://github.com/timhuijgen/sockjs-wrap.git"
-  }]
+  }],
+  "bugs": {
+    "url": "https://github.com/timhuijgen/sockjs-wrap/issues",
+    "email": "timhuijgen@gmail.com"
+  }
 }
