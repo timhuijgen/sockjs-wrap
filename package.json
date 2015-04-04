@@ -1,6 +1,6 @@
 {
   "name": "sockjs-wrap",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Wrapper for SockJS NodeJs server and Client - Add events, and client callbacks. Client works with browserify.",
   "main": "index.js",
   "directories": {
@@ -23,14 +23,14 @@
     "name": "Tim Huijgen",
     "email": "timhuijgen@gmail.com"  
   },
-  "license": "TIM",
+  "license": "MIT",
   "dependencies": {
     "eventemitter3": "latest",
     "browserify": "latest"
   },
   "repository" :
-  {
+  [{
     "type" : "git",
     "url" : "https://github.com/timhuijgen/sockjs-wrap.git"
-  }
+  }]
 }
