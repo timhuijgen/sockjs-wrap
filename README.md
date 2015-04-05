@@ -123,7 +123,7 @@ or
 
 `require('sockjs-wrap').client();`
 
-The latter option is not favorable because browserify will include both the server and client.
+The first option is not favorable because browserify will include both the server and client.
 
 Predefined events (both client and server):
 * connect
