@@ -184,7 +184,7 @@ Connection.prototype.send = function (type, data, id) {
  *
  * @param {string} type
  * @param {object} data
- * @param {array} IDs
+ * @param {array} list
  */
 
 Connection.prototype.broadcastTo = function (type, data, list) {

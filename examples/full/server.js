@@ -2,7 +2,7 @@ var
     express        = require('express'),
     http           = require('http'),
     Sockjs         = require('sockjs'),
-    Connection     = require('sockjs-wrap').server();
+    Connection     = require('sockjs-wrap/server');
 
 var sockjs_options = {sockjs_url: "http://cdn.jsdelivr.net/sockjs/0.3.4/sockjs.min.js"};
 

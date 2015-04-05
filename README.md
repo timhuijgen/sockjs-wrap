@@ -8,7 +8,7 @@ A simple SockJS wrapper for Node.
     * The server and client are both made the Node way.
     * Using browser and server compatible Event module EventEmitter3
     
-In order to use the client you will have to compile it with [Browserify.](https://github.com/substack/node-browserify)
+In order to use the client you will have to compile it with [Browserify.](https://github.com/substack/node-browserify) The examples have a browserified file included.
 
 How to use
 =========
@@ -25,8 +25,8 @@ A simple example taken from the [SockJS-node](https://github.com/sockjs/sockjs-n
 ```javascript
 var http = require('http');
 var sockjs = require('sockjs');
-// Require the wrapper and make sure to get the server() part
-var Connection = require('sockjs-wrap').server();
+// Require the wrapper and make sure to get the /server part
+var Connection = require('sockjs-wrap/server');
 
 var echo = sockjs.createServer({ sockjs_url: 'http://cdn.jsdelivr.net/sockjs/0.3.4/sockjs.min.js' });
 var server = http.createServer();
@@ -48,7 +48,7 @@ Connection.on('some_event_or_something_else', function(data, callback){
 And the client
 ```javascript
 // Make sure to get the client() part
-var  Connection  = require('sockjs-wrap').client();
+var  Connection  = require('sockjs-wrap/client');
 
 // On successful connection
 Connection.on('connect', function(){
@@ -73,10 +73,9 @@ This is a simplified version of how the authentication process works.
 ```javascript
 ... Start the http servers and everything else ...
 
-Connection.require_authentication = true;
-
+// Default is authentication is off, so turn it on
+Connection.require_authentication = true; 
 Connection.start(Sockjs_echo);
-
 Connection.on('authenticate', function(data, callback){
     // Fetch your user from DB or memory on data.token
     var user = SomeClass.findUserByToken(data.token); // Dummy function
@@ -115,6 +114,16 @@ If you want to use authentication you can call
 Connection.require_authentication = true;
 `
 before the connection is started on the server.
+
+To require your server or client you can do either 
+
+`require('sockjs-wrap/client');` 
+
+or 
+
+`require('sockjs-wrap').client();`
+
+The latter option is not favorable because browserify will include both the server and client.
 
 Predefined events (both client and server):
 * connect

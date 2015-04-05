@@ -1,4 +1,4 @@
-var  Connection  = require('sockjs-wrap').client();
+var  Connection  = require('sockjs-wrap/client');
 
 Connection.on('connect', function(){
 
