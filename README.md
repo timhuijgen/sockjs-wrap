@@ -117,13 +117,13 @@ before the connection is started on the server.
 
 To require your server or client you can do either 
 
-`require('sockjs-wrap/client');` 
+`require('sockjs-wrap/client'); // Best option` 
 
 or 
 
 `require('sockjs-wrap').client();`
 
-The first option is not favorable because browserify will include both the server and client.
+The latter option is <b>not</b> favorable because browserify will include both the server and client.
 
 Predefined events (both client and server):
 * connect
