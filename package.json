@@ -1,6 +1,6 @@
 {
   "name": "sockjs-wrap",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Wrapper for SockJS NodeJs server and Client - Add events, and client callbacks. Client works with browserify.",
   "main": "index.js",
   "directories": {
@@ -8,8 +8,7 @@
   },
   "scripts": {
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "install": "browserify examples/simple/simple-client.js > examples/simple/browserified-simple-client.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
     "sockjs",

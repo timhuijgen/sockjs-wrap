@@ -6,7 +6,7 @@ A simple SockJS wrapper for Node.
     * Authentication of clients, and keeping track of them. 
     * Send, broadcast and broadcastTo functionality. 
     * The server and client are both made the Node way.
-    * Using browser and server compatible Event module EventEmitter3]
+    * Using browser and server compatible Event module EventEmitter3
     
 In order to use the client you will have to compile it with [Browserify.](https://github.com/substack/node-browserify)
 
@@ -17,7 +17,6 @@ To install `sockjs-wrap` run:
 
     npm install sockjs-wrap
 
-The install will also browserify the examples.
 
 Simple example
 ==============
@@ -69,7 +68,8 @@ Connection.start({
 
 Authentication example
 ======================
-This is a simplified version of how the authentication process works. Full example in the examples folder.
+This is a simplified version of how the authentication process works. 
+
 ```javascript
 ... Start the http servers and everything else ...
 
@@ -106,10 +106,13 @@ Connection.on('authenticated', function (data) {
     // The user might have failed authentication here so be sure to check data for the result    
 });
 ```
+* [Simple example](https://github.com/timhuijgen/sockjs-wrap/tree/master/examples/simple)
+* [Full example](https://github.com/timhuijgen/sockjs-wrap/tree/master/examples/full) Using express.
+
 Any messages send to the server by the client while not authenticated successfully will get an error back.
-To disable the need for authentication you can call 
+If you want to use authentication you can call 
 `
-Connection.require_authentication = false;
+Connection.require_authentication = true;
 `
 before the connection is started on the server.
 

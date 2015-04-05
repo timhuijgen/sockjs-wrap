@@ -56,7 +56,7 @@ Connection.prototype.start = function (options) {
     }
 
     // Start socket connection with SockJS
-    console.log('Connection :: Starting socket interface on: ' + options.url + ':' + options.port + this.sockjs_path);
+    console.log('Connection :: Starting socket interface on: ' + options.url + ':' + options.port + options.sockjs_path);
     this._sockjs = new SockJS(options.url + ':' + options.port + options.sockjs_path);
     var self = this;
 
