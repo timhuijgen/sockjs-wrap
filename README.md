@@ -47,7 +47,7 @@ Connection.on('some_event_or_something_else', function(data, callback){
 ```
 And the client
 ```javascript
-// Make sure to get the client() part
+// Make sure to get the /client part
 var  Connection  = require('sockjs-wrap/client');
 
 // On successful connection
@@ -73,9 +73,8 @@ This is a simplified version of how the authentication process works.
 ```javascript
 ... Start the http servers and everything else ...
 
-// Default is authentication is off, so turn it on
-Connection.require_authentication = true; 
-Connection.start(Sockjs_echo);
+// Default authentication is off, so turn it on
+Connection.start(Sockjs_echo, {authentication: true});
 Connection.on('authenticate', function(data, callback){
     // Fetch your user from DB or memory on data.token
     var user = SomeClass.findUserByToken(data.token); // Dummy function

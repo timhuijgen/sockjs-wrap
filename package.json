@@ -1,13 +1,13 @@
 {
   "name": "sockjs-wrap",
-  "version": "1.0.4",
-  "description": "Wrapper for SockJS connections on Node - Add events and client callbacks. Client works with browserify.",
+  "version": "1.0.6",
+  "description": "Wrapper for SockJS connections on Node - Add events and client callbacks.",
   "main": "index.js",
   "directories": {
     "example": "examples"
   },
   "scripts": {
-    "start": "node index.js",
+    "start": "node examples/full/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -37,11 +37,10 @@
     "eventemitter3": "latest",
     "browserify": "latest"
   },
-  "repository" :
-  [{
+  "repository" : {
     "type" : "git",
-    "url" : "https://github.com/timhuijgen/sockjs-wrap.git"
-  }],
+    "url" : "git://github.com/timhuijgen/sockjs-wrap.git"
+  },
   "bugs": {
     "url": "https://github.com/timhuijgen/sockjs-wrap/issues",
     "email": "timhuijgen@gmail.com"

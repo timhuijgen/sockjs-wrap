@@ -22,9 +22,7 @@ App.post('/login', login);
 App.post('/register', register);
 
 // Start listening on socket connections
-Connection.require_authentication = true;
-Connection.start(sockjs_echo);
-
+Connection.start(sockjs_echo, {authentication: true});
 
 Connection.on('authenticate', function(data, callback){
     // Fetch your user from DB or memory on data.token

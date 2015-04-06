@@ -18,6 +18,8 @@ function Connection() {
      */
     this.require_authentication = false;
 
+    this.logging = true;
+
     this._connections = {};
     this._pending_connections = {};
     this._sockjs;
@@ -36,12 +38,20 @@ Util.inherits(Connection, EventEmitter);
  * Start the connection
  *
  * @param {SockJS} sockjs
+ * @param {object} options
  */
 
-Connection.prototype.start = function (sockjs) {
-    console.log('Connection :: Starting socket listeners');
+Connection.prototype.start = function (sockjs, options) {
+
     this._sockjs = sockjs;
     var self = this;
+
+    // Parse options
+    options                     =  options || {};
+    this.require_authentication = (options.hasOwnProperty('authentication')) ? options.authentication : this.require_authentication;
+    this.logging                = (options.hasOwnProperty('logging'))        ? options.logging        : this.logging;
+
+    !this.logging || console.log('Connection :: Starting socket listeners');
 
     // Sockjs Events
     sockjs.on('connection', function (client) {
@@ -120,7 +130,7 @@ Connection.prototype.start = function (sockjs) {
  */
 
 Connection.prototype.authenticate = function (connection_id, user) {
-    console.log('Connection :: Authenticate');
+    !this.logging || console.log('Connection :: Authenticate');
     if (this._pending_connections.hasOwnProperty(connection_id)) {
         this._connections[user.id] = this._pending_connections[connection_id];
         this._connections[user.id].user_id = user.id;
