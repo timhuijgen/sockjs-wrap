@@ -9,6 +9,7 @@ A simple SockJS wrapper for Node.
     * Using browser and server compatible Event module EventEmitter3
     
 In order to use the client you will have to compile it with [Browserify.](https://github.com/substack/node-browserify) The examples have a browserified file included.
+Version 1.0.7 now includes a [client-pure-js.js](https://github.com/timhuijgen/sockjs-wrap/tree/master/client-pure-js.js) client file which can be used free of any dependencies except sockjs.
 
 How to use
 =========
@@ -112,7 +113,11 @@ If you want to use authentication you can call
 `
 Connection.require_authentication = true;
 `
-before the connection is started on the server.
+before the connection is started, or give 
+`
+{authentication: true}
+`
+as a second parameter to the start function.
 
 To require your server or client you can do either 
 

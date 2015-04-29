@@ -30,7 +30,6 @@ Connection.on('authenticate', function(data, callback){
     var user = {id: 1, token: "my_token"}
 
     // Check token
-    console.log(data.token);
     if(user.token == data.token){
         // The wrapper added an authentication function to the data object if the client wants to authenticate
         // the user object must contain an id property

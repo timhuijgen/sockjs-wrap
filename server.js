@@ -2,7 +2,7 @@
  * Module Dependencies
  */
 
-var EventEmitter = require('eventemitter3').EventEmitter;
+var EventEmitter = require('eventemitter3');
 var Util         = require('util');
 
 /**
@@ -22,7 +22,7 @@ function Connection() {
 
     this._connections = {};
     this._pending_connections = {};
-    this._sockjs;
+    this._sockjs = null;
 
     this.on('connect', this.onConnect.bind(this));
     this.on('close', this.onClose.bind(this));
@@ -56,7 +56,11 @@ Connection.prototype.start = function (sockjs, options) {
     // Sockjs Events
     sockjs.on('connection', function (client) {
         // Add to connections
-        self._pending_connections[client.id] = client;
+        if(self.require_authentication) {
+            self._pending_connections[client.id] = client;
+        } else {
+            self._connections[client.id] = client;
+        }
         self.emit('connect', client);
 
         // Handle connection close event
@@ -202,7 +206,6 @@ Connection.prototype.broadcastTo = function (type, data, list) {
     for ( var ID in list ) {
         if(list.hasOwnProperty(ID)) {
             if (self._connections.hasOwnProperty(list[ID])) {
-                console.log("sending to " + list[ID]);
                 self.send(type, data, list[ID]);
             }
         }

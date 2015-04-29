@@ -1,10 +1,3 @@
-/**
- * Module Dependencies
- */
-
-var EventEmitter = require('eventemitter3');
-var Util         = require('util');
-
 
 /**
  * @constructor
@@ -17,13 +10,8 @@ var Connection = function () {
     this._sockjs = null;
     this._callbacks = {};
     this._pointer = 1;
+    this._events = {};
 };
-
-/**
- * Add event module
- */
-
-Util.inherits(Connection, EventEmitter);
 
 /**
  * Start the Connection and add the listeners
@@ -35,6 +23,7 @@ Connection.prototype.start = function (options) {
     // Check if SockJS is loaded
     if( 'function' !== typeof SockJS ) {
         console.log('Connection :: error :: SockJS is undefined');
+        this.emit('failure');
         return;
     }
 
@@ -135,9 +124,37 @@ Connection.prototype.send = function (type, data, callback) {
 };
 
 /**
- * Module Exports
- *
- * @type {Connection}
+ * Disconnect the connection
+ */
+Connection.prototype.disconnect = function() {
+    if(this._sockjs._transport.ws)
+        this._sockjs._transport.ws.onclose();
+}
+
+/**
+ * Event system
+ * @param {string} event
+ * @param {function} cb
  */
 
-module.exports = exports = new Connection();
+Connection.prototype.on = function(event, cb) {
+    if( ! this._events.hasOwnProperty(event) ) {
+        this._events[event] = [];
+    }
+    this._events[event].push(cb);
+};
+
+/**
+ * Event system
+ * @param event
+ */
+Connection.prototype.emit = function(event) {
+    var args = Array.prototype.slice.call(arguments).slice(1);
+
+    if( this._events.hasOwnProperty(event) ) {
+        var events = this._events[event];
+        for ( var key in events ) {
+            events[key].apply(null, args);
+        }
+    }
+};
