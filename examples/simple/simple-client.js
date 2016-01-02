@@ -1,4 +1,10 @@
-var  Connection  = require('sockjs-wrap/client');
+/**
+ * Make sure to have the scripts in your DOM
+ * 
+ * <script src="path.to.sockjs.js"></script>
+ * <script src="path.to.client.js"></script>
+ *
+ */
 
 Connection.on('connect', function(){
 

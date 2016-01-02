@@ -1,7 +1,5 @@
 'use strict';
 
-var
-    Connection  = require('sockjs-wrap/client');
 
 Connection.on('connect', function () {
     // Normally you would want to do an http login request here to the server and get a token back on successful login.

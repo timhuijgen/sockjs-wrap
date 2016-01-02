@@ -2,8 +2,9 @@
  * Module Dependencies
  */
 
-var EventEmitter = require('eventemitter3');
+var EventEmitter = require('events').EventEmitter;
 var Util         = require('util');
+var _            = require('lodash');
 
 /**
  * @constructor
@@ -18,7 +19,7 @@ function Connection() {
      */
     this.require_authentication = false;
 
-    this.logging = true;
+    this.logging = function(){};
 
     this._connections = {};
     this._pending_connections = {};
@@ -26,7 +27,7 @@ function Connection() {
 
     this.on('connect', this.onConnect.bind(this));
     this.on('close', this.onClose.bind(this));
-};
+}
 
 /**
  * Add event module
@@ -51,7 +52,7 @@ Connection.prototype.start = function (sockjs, options) {
     this.require_authentication = (options.hasOwnProperty('authentication')) ? options.authentication : this.require_authentication;
     this.logging                = (options.hasOwnProperty('logging'))        ? options.logging        : this.logging;
 
-    !this.logging || console.log('Connection :: Starting socket listeners');
+    this.logging.call(null, 'Connection :: Starting socket listeners');
 
     // Sockjs Events
     sockjs.on('connection', function (client) {
@@ -74,13 +75,13 @@ Connection.prototype.start = function (sockjs, options) {
             try {
                 var message = JSON.parse(data);
             } catch (e) {
-                console.error("Connection :: Error :: Failed to parse JSON :: ", e);
+                self.logging.call(null, "Connection :: Error :: Failed to parse JSON :: ", e);
                 return;
             }
 
             // Check for type
             if (!message.hasOwnProperty('type')) {
-                console.error("Connection :: Error :: No message type specified");
+                self.logging.call(null, "Connection :: Error :: No message type specified");
                 return;
             }
 
@@ -113,7 +114,7 @@ Connection.prototype.start = function (sockjs, options) {
             // Emit and catch callbacks that shouldn't be called
             else {
                 self.emit(message.type, message.data, function () {
-                    console.error("Connection :: Warning :: Client did not specify callback function");
+                    self.logging.call(null, "Connection :: Warning :: Client did not specify callback function");
                 });
             }
 
@@ -203,13 +204,11 @@ Connection.prototype.send = function (type, data, id) {
 
 Connection.prototype.broadcastTo = function (type, data, list) {
     var self = this;
-    for ( var ID in list ) {
-        if(list.hasOwnProperty(ID)) {
-            if (self._connections.hasOwnProperty(list[ID])) {
-                self.send(type, data, list[ID]);
-            }
+    _.forEach(list, function(id) {
+        if (self._connections.hasOwnProperty(id)) {
+            self.send(type, data, id);
         }
-    }
+    });
 };
 
 /**
@@ -221,11 +220,9 @@ Connection.prototype.broadcastTo = function (type, data, list) {
 
 Connection.prototype.broadcast = function (type, data) {
     var self = this;
-    for( var ID in self._connections ){
-        if(self._connections.hasOwnProperty(ID)) {
-            self.send(type, data, self._connections[ID]);
-        }
-    }
+    _.forEach(self._connections, function(id){
+        self.send(type, data, id);
+    });
 };
 
 /**

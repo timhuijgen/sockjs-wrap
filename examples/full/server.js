@@ -1,25 +1,19 @@
 var
-    express        = require('express'),
     http           = require('http'),
     Sockjs         = require('sockjs'),
-    Connection     = require('sockjs-wrap/server');
+    Connection     = require('./../../server');
 
-var sockjs_options = {sockjs_url: "http://cdn.jsdelivr.net/sockjs/0.3.4/sockjs.min.js"};
+var sockjs_options = {sockjs_url: "http://cdn.jsdelivr.net/sockjs/1.0.1/sockjs.min.js"};
 
 // Create the SockJS server and the Express App
 var sockjs_echo = Sockjs.createServer(sockjs_options);
-var App         = express();
 
 // Create the Express server and give the server to SockJS
-var Server = http.createServer(App);
+var Server = http.createServer();
 sockjs_echo.installHandlers(Server, {prefix: '/socket'});
 
 // Start listening
 Server.listen(9876);
-
-// Handle normal HTTP requests
-App.post('/login', login);
-App.post('/register', register);
 
 // Start listening on socket connections
 Connection.start(sockjs_echo, {authentication: true});
@@ -46,12 +40,3 @@ Connection.on('authenticated', function(user){
     // Do anything you want
     console.log('Connection :: Authenticated user : ', user);
 });
-
-
-function login(req, res) {
-
-}
-
-function register(req, res) {
-
-}

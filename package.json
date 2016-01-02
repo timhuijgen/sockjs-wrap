@@ -1,14 +1,13 @@
 {
   "name": "sockjs-wrap",
-  "version": "1.0.6",
+  "version": "1.1.0",
   "description": "Wrapper for SockJS connections on Node - Add events and client callbacks.",
   "main": "index.js",
   "directories": {
     "example": "examples"
   },
   "scripts": {
-    "start": "node examples/full/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node examples/full/server.js"
   },
   "keywords": [
     "sockjs",
@@ -29,17 +28,16 @@
   ],
   "author": {
     "name": "Tim Huijgen",
-    "email": "timhuijgen@gmail.com"  
+    "email": "timhuijgen@gmail.com"
   },
   "license": "MIT",
   "dependencies": {
-    "sockjs": "latest",
-    "eventemitter3": "latest",
-    "browserify": "latest"
+    "lodash": "^3.10.1",
+    "sockjs": "^0.3.15"
   },
-  "repository" : {
-    "type" : "git",
-    "url" : "git://github.com/timhuijgen/sockjs-wrap.git"
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/timhuijgen/sockjs-wrap.git"
   },
   "bugs": {
     "url": "https://github.com/timhuijgen/sockjs-wrap/issues",

@@ -1,10 +1,3 @@
-/**
- * Module Dependencies
- */
-
-var EventEmitter = require('eventemitter3');
-var Util         = require('util');
-
 
 /**
  * @constructor
@@ -17,13 +10,8 @@ var Connection = function () {
     this._sockjs = null;
     this._callbacks = {};
     this._pointer = 1;
+    this._events = {};
 };
-
-/**
- * Add event module
- */
-
-Util.inherits(Connection, EventEmitter);
 
 /**
  * Start the Connection and add the listeners
@@ -32,20 +20,22 @@ Util.inherits(Connection, EventEmitter);
  */
 
 Connection.prototype.start = function (options) {
-    // Check if SockJS is loaded
-    if( 'function' !== typeof SockJS ) {
-        console.log('Connection :: error :: SockJS is undefined');
-        return;
-    }
-
     // Setup basic options
     options             = options             || {};
     options.url         = options.url         || window.location.hostname;
     options.sockjs_path = options.sockjs_path || this.sockjs_path;
+    options.logging     = options.logging     || function(){};
+
+    // Check if SockJS is loaded
+    if( 'function' !== typeof SockJS ) {
+        options.logging.call(null, 'Connection :: error :: SockJS is undefined');
+        this.emit('failure');
+        return;
+    }
 
     // Check for URL and port
     if(!options.hasOwnProperty('port') || !options.hasOwnProperty('url')) {
-        console.log('Connection :: error :: URL or Port not defined');
+        options.logging.call(null, 'Connection :: error :: URL or Port not defined');
         return;
     }
 
@@ -56,7 +46,7 @@ Connection.prototype.start = function (options) {
     }
 
     // Start socket connection with SockJS
-    console.log('Connection :: Starting socket interface on: ' + options.url + ':' + options.port + options.sockjs_path);
+    options.logging.call(null, 'Connection :: Starting socket interface on: ' + options.url + ':' + options.port + options.sockjs_path);
     this._sockjs = new SockJS(options.url + ':' + options.port + options.sockjs_path);
     var self = this;
 
@@ -76,13 +66,13 @@ Connection.prototype.start = function (options) {
         try {
             var message = JSON.parse(raw_message.data);
         } catch (error) {
-            console.log("Connection :: Error parsing message: ", error);
+            options.logging.call(null, "Connection :: Error parsing message: ", error);
             return;
         }
 
         // Check for type
         if (!message.hasOwnProperty('type')) {
-            console.log("Connection :: Invalid message: no type specified :: ", message);
+            options.logging.call(null, "Connection :: Invalid message: no type specified :: ", message);
             return;
         }
 
@@ -135,9 +125,37 @@ Connection.prototype.send = function (type, data, callback) {
 };
 
 /**
- * Module Exports
- *
- * @type {Connection}
+ * Disconnect the connection
+ */
+Connection.prototype.disconnect = function() {
+    if(this._sockjs._transport && this._sockjs._transport.ws)
+        this._sockjs._transport.ws.onclose();
+};
+
+/**
+ * Event system
+ * @param {string} event
+ * @param {function} cb
  */
 
-module.exports = exports = new Connection();
+Connection.prototype.on = function(event, cb) {
+    if( ! this._events.hasOwnProperty(event) ) {
+        this._events[event] = [];
+    }
+    this._events[event].push(cb);
+};
+
+/**
+ * Event system
+ * @param event
+ */
+Connection.prototype.emit = function(event) {
+    var args = Array.prototype.slice.call(arguments).slice(1);
+
+    if( this._events.hasOwnProperty(event) ) {
+        var events = this._events[event];
+        for ( var key in events ) {
+            events[key].apply(null, args);
+        }
+    }
+};
