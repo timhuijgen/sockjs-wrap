@@ -11,31 +11,43 @@ var Connection = function () {
     this._callbacks = {};
     this._pointer = 1;
     this._events = {};
+    this._loggingContext = console ? console : {};
 };
 
 /**
  * Start the Connection and add the listeners
  *
- * @param {object} options
+ * @param {SockJS} SockJS |  Optional
+ * @param {object} options | Required
  */
 
-Connection.prototype.start = function (options) {
+Connection.prototype.start = function (SockJS, options) {
+    if(typeof SockJS !== "function") {
+        options = SockJS;
+    }
+
     // Setup basic options
-    options             = options             || {};
-    options.url         = options.url         || window.location.hostname;
-    options.sockjs_path = options.sockjs_path || this.sockjs_path;
-    options.logging     = options.logging     || function(){};
+    options                 = options                || {};
+    options.url             = options.url            || window.location.hostname;
+    options.sockjs_path     = options.sockjs_path    || this.sockjs_path;
+    options.logging         = options.logging        || function(){};
+    options.loggingContext  = options.loggingContext || this._loggingContext; // Fix for logging in chrome
+
+    // Check for valid logging function
+    if( 'function' !== typeof options.logging) {
+        options.logging = function(){}
+    }
 
     // Check if SockJS is loaded
     if( 'function' !== typeof SockJS ) {
-        options.logging.call(null, 'Connection :: error :: SockJS is undefined');
+        options.logging.call(options.loggingContext, 'Connection :: error :: SockJS is undefined');
         this.emit('failure');
         return;
     }
 
     // Check for URL and port
     if(!options.hasOwnProperty('port') || !options.hasOwnProperty('url')) {
-        options.logging.call(null, 'Connection :: error :: URL or Port not defined');
+        options.logging.call(options.loggingContext, 'Connection :: error :: URL or Port not defined');
         return;
     }
 
@@ -46,7 +58,7 @@ Connection.prototype.start = function (options) {
     }
 
     // Start socket connection with SockJS
-    options.logging.call(null, 'Connection :: Starting socket interface on: ' + options.url + ':' + options.port + options.sockjs_path);
+    options.logging.call(options.loggingContext, 'Connection :: Starting socket interface on: ' + options.url + ':' + options.port + options.sockjs_path);
     this._sockjs = new SockJS(options.url + ':' + options.port + options.sockjs_path);
     var self = this;
 
@@ -66,13 +78,13 @@ Connection.prototype.start = function (options) {
         try {
             var message = JSON.parse(raw_message.data);
         } catch (error) {
-            options.logging.call(null, "Connection :: Error parsing message: ", error);
+            options.logging.call(options.loggingContext, "Connection :: Error parsing message: ", error);
             return;
         }
 
         // Check for type
         if (!message.hasOwnProperty('type')) {
-            options.logging.call(null, "Connection :: Invalid message: no type specified :: ", message);
+            options.logging.call(options.loggingContext, "Connection :: Invalid message: no type specified :: ", message);
             return;
         }
 
@@ -91,7 +103,7 @@ Connection.prototype.start = function (options) {
 /**
  * Send an authentication request to the server with a token.
  *
- * @param {mixed} token
+ * @param {any} token
  */
 
 Connection.prototype.authenticate = function (token) {
@@ -155,7 +167,20 @@ Connection.prototype.emit = function(event) {
     if( this._events.hasOwnProperty(event) ) {
         var events = this._events[event];
         for ( var key in events ) {
-            events[key].apply(null, args);
+            if(events.hasOwnProperty(key)) {
+                events[key].apply(null, args);
+            }
         }
     }
 };
+
+/**
+ * Export to the window or as module export based on environment
+ */
+(function (factory){
+    if(typeof exports === 'object') {
+        module.exports = exports = new factory();
+    } else {
+        window.Connection = new factory();
+    }
+})(Connection);

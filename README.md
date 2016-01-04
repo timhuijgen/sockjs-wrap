@@ -7,9 +7,7 @@ A simple SockJS wrapper for Node.
     * Send, broadcast and broadcastTo functionality. 
     * The server and client are both made the Node way.
     * Using browser and server compatible Event module EventEmitter3
-    
-In order to use the client you will have to compile it with [Browserify.](https://github.com/substack/node-browserify) The examples have a browserified file included.
-Version 1.0.7 now includes a [client-pure-js.js](https://github.com/timhuijgen/sockjs-wrap/tree/master/client-pure-js.js) client file which can be used free of any dependencies except sockjs.
+
 
 How to use
 =========
@@ -26,8 +24,8 @@ A simple example taken from the [SockJS-node](https://github.com/sockjs/sockjs-n
 ```javascript
 var http = require('http');
 var sockjs = require('sockjs');
-// Require the wrapper and make sure to get the /server part
-var Connection = require('sockjs-wrap/server');
+// Require the wrapper
+var Connection = require('sockjs-wrap');
 
 var echo = sockjs.createServer({ sockjs_url: 'http://cdn.jsdelivr.net/sockjs/0.3.4/sockjs.min.js' });
 var server = http.createServer();
@@ -48,7 +46,7 @@ Connection.on('some_event_or_something_else', function(data, callback){
 ```
 And the client
 ```javascript
-// Make sure to get the /client part
+// Require the client or make sure the client.js is in your html before this code runs
 var  Connection  = require('sockjs-wrap/client');
 
 // On successful connection
@@ -59,9 +57,16 @@ Connection.on('connect', function(){
     });
 });
 
-// The SockJS client must be included in your HTML before you start
 // Start the connection
+// If the SockJS client is in your HTML before you start
 Connection.start({
+    port: 9876,
+    sockjs_path: '/echo'
+});
+
+// Or if you require the SockJS client:
+var SockJS = require('sockjs-client');
+Connection.start(SockJS, {
     port: 9876,
     sockjs_path: '/echo'
 });
@@ -106,7 +111,7 @@ Connection.on('authenticated', function (data) {
 });
 ```
 * [Simple example](https://github.com/timhuijgen/sockjs-wrap/tree/master/examples/simple)
-* [Full example](https://github.com/timhuijgen/sockjs-wrap/tree/master/examples/full) Using express.
+* [Full example](https://github.com/timhuijgen/sockjs-wrap/tree/master/examples/full)
 
 Any messages send to the server by the client while not authenticated successfully will get an error back.
 If you want to use authentication you can call 
@@ -118,16 +123,6 @@ before the connection is started, or give
 {authentication: true}
 `
 as a second parameter to the start function.
-
-To require your server or client you can do either 
-
-`require('sockjs-wrap/client'); // Best option` 
-
-or 
-
-`require('sockjs-wrap').client();`
-
-The latter option is <b>not</b> favorable because browserify will include both the server and client.
 
 Predefined events (both client and server):
 * connect

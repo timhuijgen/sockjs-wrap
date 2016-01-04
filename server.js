@@ -135,16 +135,17 @@ Connection.prototype.start = function (sockjs, options) {
  */
 
 Connection.prototype.authenticate = function (connection_id, user) {
-    !this.logging || console.log('Connection :: Authenticate');
+    this.logging.call(null, 'Connection :: Authenticate');
     if (this._pending_connections.hasOwnProperty(connection_id)) {
-        this._connections[user.id] = this._pending_connections[connection_id];
-        this._connections[user.id].user_id = user.id;
+        var id = (user.hasOwnProperty('id')) ? user.id : user.get('id');
+        this._connections[id] = this._pending_connections[connection_id];
+        this._connections[id].user_id = id;
         delete this._pending_connections[connection_id];
 
         this.emit('authenticated', user);
         return true;
     } else {
-        console.error("Connection :: Authenticate :: Failed to find the connection");
+        this.logging.call(null, "Connection :: Authenticate :: Failed to find the connection");
     }
     return false;
 };

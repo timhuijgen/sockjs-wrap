@@ -1,6 +1,6 @@
 {
   "name": "sockjs-wrap",
-  "version": "1.1.0",
+  "version": "1.1.2",
   "description": "Wrapper for SockJS connections on Node - Add events and client callbacks.",
   "main": "server.js",
   "directories": {
