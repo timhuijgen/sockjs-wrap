@@ -179,8 +179,8 @@ Connection.prototype.emit = function(event) {
  */
 (function (factory){
     if(typeof exports === 'object') {
-        module.exports = exports = new factory();
+        module.exports = exports = factory;
     } else {
-        window.Connection = new factory();
+        window.Connection = factory;
     }
 })(Connection);

@@ -232,4 +232,4 @@ Connection.prototype.broadcast = function (type, data) {
  * @type {Connection}
  */
 
-module.exports = exports = new Connection();
+module.exports = exports = Connection;
