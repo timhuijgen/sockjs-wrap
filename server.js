@@ -18,12 +18,13 @@ function Connection() {
      * @type {boolean}
      */
     this.require_authentication = false;
-
+    this.bundling = false;
     this.logging = function(){};
 
     this._connections = {};
     this._pending_connections = {};
     this._sockjs = null;
+
 
     this.on('connect', this.onConnect.bind(this));
     this.on('close', this.onClose.bind(this));
@@ -51,6 +52,7 @@ Connection.prototype.start = function (sockjs, options) {
     options                     =  options || {};
     this.require_authentication = (options.hasOwnProperty('authentication')) ? options.authentication : this.require_authentication;
     this.logging                = (options.hasOwnProperty('logging'))        ? options.logging        : this.logging;
+    this.bundling               = (options.hasOwnProperty('bundling'))       ? options.bundling       : this.bundling;
 
     this.logging.call(null, 'Connection :: Starting socket listeners');
 
@@ -106,9 +108,16 @@ Connection.prototype.start = function (sockjs, options) {
 
             // If the client has included a callback_id, prepare the callback function and emit
             if (message.hasOwnProperty('callback_id')) {
-                var callback = function (data) {
-                    client.write(JSON.stringify({type: 'callback', data: data, callback_id: message.callback_id}));
-                };
+                var callback = message.callback_id;
+                if(!self.bundling) {
+                    callback = function(data) {
+                        client.write(JSON.stringify({
+                            type: 'callback',
+                            data: data,
+                            callback_id: message.callback_id
+                        }));
+                    };
+                }
                 self.emit(message.type, message.data, callback);
             }
             // Emit and catch callbacks that shouldn't be called
@@ -174,7 +183,22 @@ Connection.prototype.onClose = function(client) {
     } else {
         delete this._pending_connections[client.id];
     }
-}
+};
+
+
+/**
+ * Allow for bundled messages with multiple callback_ids
+ *
+ * Bundle: [{callback_id: <id>, type: <type>, data: <data>}]
+ * Type is optional if you supply a callback_id,
+ * callback_id is optional if you supply a type
+ *
+ * @param {Array} bundle
+ * @param {int} id
+ */
+Connection.prototype.bundle = function(bundle, id) {
+    this.send('bundle', bundle, id);
+};
 
 /**
  * Send data to a specific user

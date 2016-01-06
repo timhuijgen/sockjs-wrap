@@ -88,16 +88,47 @@ Connection.prototype.start = function (SockJS, options) {
             return;
         }
 
-        // Check for callback
-        if (message.hasOwnProperty('callback_id') && self._callbacks.hasOwnProperty(message.callback_id)) {
-            self._callbacks[message.callback_id].call(null, message.data);
+        // Check for bundles
+        if('bundle' == message.type) {
+            for( var i = 0; i < message.data.length; i ++ ) {
+                var bundleItem = message.data[i];
+                if(!bundleItem.hasOwnProperty('data')) {
+                    options.logging.call(options.loggingContext, "Connection :: Bundle Invalid message: no data specified :: ", bundleItem);
+                    return;
+                }
+
+                if(bundleItem.hasOwnProperty('callback_id')) {
+                    self.executeCallback(bundleItem.callback_id, bundleItem.data);
+                }
+
+                if(bundleItem.hasOwnProperty('type')) {
+                    self.emit(bundleItem.type, bundleItem.data);
+                }
+            }
         }
+        else {
+            // Check for callback
+            if(message.hasOwnProperty('callback_id')) {
+                self.executeCallback( callback_id, message.data );
+            }
 
-        // Emit the message
-        self.emit(message.type, message.data);
-
+            // Emit the message
+            self.emit( message.type, message.data );
+        }
     };
 
+};
+
+/**
+ * Execute a given callback_id
+ *
+ * @param callback_id
+ * @param data
+ */
+Connection.prototype.executeCallback = function(callback_id, data) {
+    if(this._callbacks.hasOwnProperty(callback_id)) {
+        this._callbacks[callback_id].call(null, data);
+    }
 };
 
 /**
