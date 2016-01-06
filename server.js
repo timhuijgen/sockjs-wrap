@@ -92,9 +92,17 @@ Connection.prototype.start = function (sockjs, options) {
                 message.data.authenticate = function (user) {
                     return self.authenticate(client.id, user);
                 };
+                self.emit(message.type, message.data, function(data) {
+                    client.write(JSON.stringify({
+                        type: 'callback',
+                        data: data,
+                        callback_id: message.callback_id
+                    }));
+                });
+                return;
             }
             // Else if the connection is not authenticated return an error
-            else if (!client.hasOwnProperty('user_id')) {
+            if (!client.hasOwnProperty('user_id')) {
                 client.write(JSON.stringify({
                     type: message.type,
                     data: {type: 'error', message: 'Not authenticated', timestamp: message.data.timestamp}
