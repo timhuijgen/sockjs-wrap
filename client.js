@@ -93,8 +93,7 @@ Connection.prototype.start = function (SockJS, options) {
             for( var i = 0; i < message.data.length; i ++ ) {
                 var bundleItem = message.data[i];
                 if(!bundleItem.hasOwnProperty('data')) {
-                    options.logging.call(options.loggingContext, "Connection :: Bundle Invalid message: no data specified :: ", bundleItem);
-                    return;
+                    bundleItem.data = {};
                 }
 
                 if(bundleItem.hasOwnProperty('callback_id')) {
@@ -109,11 +108,11 @@ Connection.prototype.start = function (SockJS, options) {
         else {
             // Check for callback
             if(message.hasOwnProperty('callback_id')) {
-                self.executeCallback( callback_id, message.data );
+                self.executeCallback(message.callback_id, message.data);
             }
 
             // Emit the message
-            self.emit( message.type, message.data );
+            self.emit(message.type, message.data);
         }
     };
 
