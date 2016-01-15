@@ -39,13 +39,6 @@ Util.inherits(Connection, EventEmitter);
 /**
  * Start the connection
  *
- * To reduce the amount of data being sent over the socket, the following abbreviations will be used
- * Message parameters:
- * b - bundle
- * t - type
- * d - data
- * c - callback_id
- *
  * @param {SockJS} sockjs
  * @param {object} options
  */
@@ -95,15 +88,15 @@ Connection.prototype.start = function (sockjs, options) {
             }
 
             // If the connection is trying to authenticate add authentication function
-            if ('authenticate' == message.t) {
+            if ('authenticate' == message.type) {
                 message.data.authenticate = function (user) {
                     return self.authenticate(client.id, user);
                 };
-                self.emit(message.t, message.d, function(data) {
+                self.emit(message.type, message.data, function(data) {
                     client.write(JSON.stringify({
-                        t: 'callback',
-                        d: data,
-                        c: message.c
+                        type: 'callback',
+                        data: data,
+                        callback_id: message.callback_id
                     }));
                 });
                 return;
@@ -111,33 +104,33 @@ Connection.prototype.start = function (sockjs, options) {
             // Else if the connection is not authenticated return an error
             if (!client.hasOwnProperty('user_id')) {
                 client.write(JSON.stringify({
-                    t: message.t,
-                    d: {type: 'error', message: 'Not authenticated', timestamp: message.data.timestamp}
+                    type: message.type,
+                    data: {type: 'error', message: 'Not authenticated', timestamp: message.data.timestamp}
                 }));
                 return;
             }
             // Or add the authenticated user_id to the message
             else {
-                message.d.user_id = client.user_id;
+                message.data.user_id = client.user_id;
             }
 
             // If the client has included a callback_id, prepare the callback function and emit
-            if (message.hasOwnProperty('c')) {
-                var callback = message.c;
+            if (message.hasOwnProperty('callback_id')) {
+                var callback = message.callback_id;
                 if(!self.bundling) {
                     callback = function(data) {
                         client.write(JSON.stringify({
-                            t: 'callback',
-                            d: data,
-                            c: message.c
+                            type: 'callback',
+                            data: data,
+                            callback_id: message.callback_id
                         }));
                     };
                 }
-                self.emit(message.t, message.d, callback);
+                self.emit(message.type, message.data, callback);
             }
             // Emit and catch callbacks that shouldn't be called
             else {
-                self.emit(message.t, message.d, function () {
+                self.emit(message.type, message.data, function () {
                     self.logging.call(null, "Connection :: Warning :: Client did not specify callback function");
                 });
             }
@@ -212,7 +205,7 @@ Connection.prototype.onClose = function(client) {
  * @param {int} id
  */
 Connection.prototype.bundle = function(bundle, id) {
-    this.send('b', bundle, id);
+    this.send('bundle', bundle, id);
 };
 
 /**
@@ -225,7 +218,7 @@ Connection.prototype.bundle = function(bundle, id) {
  */
 
 Connection.prototype.send = function (type, data, id) {
-    var _data = {t: type, d: data};
+    var _data = {type: type, data: data};
 
     if (this._connections.hasOwnProperty(id)) {
         this._connections[id].write(JSON.stringify(_data));
