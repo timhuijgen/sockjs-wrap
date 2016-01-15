@@ -17,6 +17,13 @@ var Connection = function () {
 /**
  * Start the Connection and add the listeners
  *
+ * To reduce the amount of data being sent over the socket, the following abbreviations will be used
+ * Message parameters:
+ * b - bundle
+ * t - type
+ * d - data
+ * c - callback_id
+ *
  * @param {SockJS} SockJS |  Optional
  * @param {object} options | Required
  */
@@ -83,36 +90,36 @@ Connection.prototype.start = function (SockJS, options) {
         }
 
         // Check for type
-        if (!message.hasOwnProperty('type')) {
+        if (!message.hasOwnProperty('t')) {
             options.logging.call(options.loggingContext, "Connection :: Invalid message: no type specified :: ", message);
             return;
         }
 
         // Check for bundles
-        if('bundle' == message.type) {
-            for( var i = 0; i < message.data.length; i ++ ) {
-                var bundleItem = message.data[i];
-                if(!bundleItem.hasOwnProperty('data')) {
-                    bundleItem.data = {};
+        if('b' == message.t) {
+            for( var i = 0; i < message.d.length; i ++ ) {
+                var bundleItem = message.d[i];
+                if(!bundleItem.hasOwnProperty('d')) {
+                    bundleItem.d = {};
                 }
 
-                if(bundleItem.hasOwnProperty('callback_id')) {
-                    self.executeCallback(bundleItem.callback_id, bundleItem.data);
+                if(bundleItem.hasOwnProperty('c')) {
+                    self.executeCallback(bundleItem.c, bundleItem.d);
                 }
 
-                if(bundleItem.hasOwnProperty('type')) {
-                    self.emit(bundleItem.type, bundleItem.data);
+                if(bundleItem.hasOwnProperty('t')) {
+                    self.emit(bundleItem.t, bundleItem.d);
                 }
             }
         }
         else {
             // Check for callback
-            if(message.hasOwnProperty('callback_id')) {
-                self.executeCallback(message.callback_id, message.data);
+            if(message.hasOwnProperty('c')) {
+                self.executeCallback(message.c, message.d);
             }
 
             // Emit the message
-            self.emit(message.type, message.data);
+            self.emit(message.t, message.d);
         }
     };
 
@@ -155,11 +162,11 @@ Connection.prototype.authenticate = function (token) {
  */
 
 Connection.prototype.send = function (type, data, callback) {
-    var _data = {type: type, data: data};
+    var _data = {t: type, d: data};
 
     if (typeof(callback) === 'function') {
         this._callbacks[this._pointer] = callback;
-        _data.callback_id = this._pointer;
+        _data.c = this._pointer;
         this._pointer += 1;
     }
 
