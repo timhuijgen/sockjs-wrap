@@ -113,7 +113,7 @@ Connection.prototype.start = function (sockjs, options) {
             else {
                 message.data.user_id = client.user_id;
                 if(self._clientCallbacks.hasOwnProperty(client.user_id)) {
-                    _.forEach(self._clientCallbacks, function(callback) {
+                    _.forEach(self._clientCallbacks[client.user_id], function(callback) {
                          callback(message);
                     });
                 }
