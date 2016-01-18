@@ -24,7 +24,7 @@ function Connection() {
     this._connections = {};
     this._pending_connections = {};
     this._sockjs = null;
-
+    this._clientCallbacks = {};
 
     this.on('connect', this.onConnect.bind(this));
     this.on('close', this.onClose.bind(this));
@@ -101,7 +101,7 @@ Connection.prototype.start = function (sockjs, options) {
                 });
                 return;
             }
-            // Else if the connection is not authenticated return an error
+            // If the connection is not authenticated return an error
             if (!client.hasOwnProperty('user_id')) {
                 client.write(JSON.stringify({
                     type: message.type,
@@ -112,6 +112,11 @@ Connection.prototype.start = function (sockjs, options) {
             // Or add the authenticated user_id to the message
             else {
                 message.data.user_id = client.user_id;
+                if(self._clientCallbacks.hasOwnProperty(client.user_id)) {
+                    _.forEach(self._clientCallbacks, function(callback) {
+                         callback(message);
+                    });
+                }
             }
 
             // If the client has included a callback_id, prepare the callback function and emit
@@ -146,7 +151,7 @@ Connection.prototype.start = function (sockjs, options) {
  * The connection will be deleted from _pending_connections and added to _connections
  * And a user_id will be added to the connection object
  *
- * @param {mixed} connection_id
+ * @param {any} connection_id
  * @param {object} user  |  Needs property id
  * @returns {boolean}
  */
@@ -161,9 +166,8 @@ Connection.prototype.authenticate = function (connection_id, user) {
 
         this.emit('authenticated', user);
         return true;
-    } else {
-        this.logging.call(null, "Connection :: Authenticate :: Failed to find the connection");
     }
+    this.logging.call(null, "Connection :: Authenticate :: Failed to find the connection");
     return false;
 };
 
@@ -177,7 +181,7 @@ Connection.prototype.onConnect = function(client) {
     if (!this.require_authentication && !client.hasOwnProperty('user_id')) {
         client.user_id = client.id;
     }
-}
+};
 
 /**
  * If the client disconnects, remove it from the connection list
@@ -256,6 +260,16 @@ Connection.prototype.broadcast = function (type, data) {
     _.forEach(self._connections, function(id){
         self.send(type, data, id);
     });
+};
+
+/**
+ * Allow for registering callbacks directly onto a user_id
+ */
+Connection.prototype.addClientCallback = function(client_id, callback) {
+    if(!this._clientCallbacks.hasOwnProperty(client_id)) {
+        this._clientCallbacks[client_id] = [];
+    }
+    this._clientCallbacks[client_id].push(callback);
 };
 
 /**
