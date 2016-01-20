@@ -21,9 +21,9 @@ var Connection = function () {
  * @param {object} options | Required
  */
 
-Connection.prototype.start = function (SockJS, options) {
-    if(typeof SockJS !== "function") {
-        options = SockJS;
+Connection.prototype.start = function (instance, options) {
+    if(typeof instance !== "function") {
+        options = instance;
     }
 
     // Setup basic options
