@@ -17,13 +17,15 @@ var Connection = function () {
 /**
  * Start the Connection and add the listeners
  *
- * @param {SockJS} SockJS |  Optional
+ * @param {SockJS} instance |  Optional
  * @param {object} options | Required
  */
 
 Connection.prototype.start = function (instance, options) {
     if(typeof instance !== "function") {
         options = instance;
+    } else {
+        SockJS = instance;
     }
 
     // Setup basic options
@@ -38,7 +40,7 @@ Connection.prototype.start = function (instance, options) {
         options.logging = function(){}
     }
 
-    // Check if SockJS is loaded
+    // Check if SockJS is loaded, either in the HTML or passed as instance
     if( 'function' !== typeof SockJS ) {
         options.logging.call(options.loggingContext, 'Connection :: error :: SockJS is undefined');
         this.emit('failure');
