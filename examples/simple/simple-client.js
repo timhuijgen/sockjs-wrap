@@ -6,16 +6,16 @@
  *
  */
 
-Connection.on('connect', function(){
+var MyConnection = new window.Connection();
 
-    Connection.send('some_event_or_something_else', {data: "Hello there"}, function(data){
+MyConnection.on('connect', function(){
+
+    MyConnection.send('some_event_or_something_else', {data: "Hello there"}, function(data){
         console.log("The server called our callback: ", data);
     });
 });
 
-Connection.start({
+MyConnection.start({
     port: 9876,
     sockjs_path: '/echo'
 });
-
-window.Connection = Connection;

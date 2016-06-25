@@ -1,6 +1,6 @@
 var http = require('http');
 var sockjs = require('sockjs');
-var Connection = require('sockjs-wrap/server');
+var Connection = new (require('sockjs-wrap/server'))();
 
 var echo = sockjs.createServer({ sockjs_url: 'http://cdn.jsdelivr.net/sockjs/0.3.4/sockjs.min.js' });
 var server = http.createServer();

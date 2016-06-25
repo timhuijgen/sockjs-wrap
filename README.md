@@ -25,7 +25,7 @@ A simple example taken from the [SockJS-node](https://github.com/sockjs/sockjs-n
 var http = require('http');
 var sockjs = require('sockjs');
 // Require the wrapper
-var Connection = require('sockjs-wrap');
+var Connection = new (require('sockjs-wrap'))();
 
 var echo = sockjs.createServer({ sockjs_url: 'http://cdn.jsdelivr.net/sockjs/0.3.4/sockjs.min.js' });
 var server = http.createServer();
@@ -47,7 +47,7 @@ Connection.on('some_event_or_something_else', function(data, callback){
 And the client
 ```javascript
 // Require the client or make sure the client.js is in your html before this code runs
-var  Connection  = require('sockjs-wrap/client');
+var  Connection  = new (require('sockjs-wrap/client'))();
 
 // On successful connection
 Connection.on('connect', function(){
