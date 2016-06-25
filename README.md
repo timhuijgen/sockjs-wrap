@@ -15,6 +15,10 @@ How to use
 To install `sockjs-wrap` run:
 
     npm install sockjs-wrap
+    
+    
+Run the full example test:
+``` npm test ```
 
 
 Simple example

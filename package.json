@@ -7,7 +7,7 @@
     "example": "examples"
   },
   "scripts": {
-    "test": "node examples/full/server.js"
+    "test": "node test.js"
   },
   "keywords": [
     "sockjs",
@@ -43,5 +43,9 @@
     "url": "https://github.com/timhuijgen/sockjs-wrap/issues",
     "email": "timhuijgen@gmail.com"
   },
-  "homepage": "https://github.com/timhuijgen/sockjs-wrap"
+  "homepage": "https://github.com/timhuijgen/sockjs-wrap",
+  "devDependencies": {
+    "beefy": "^2.1.8",
+    "open": "0.0.5"
+  }
 }
