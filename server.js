@@ -162,6 +162,15 @@ Connection.prototype.authenticate = function (connection_id, user) {
         var id = (user.hasOwnProperty('id')) ? user.id : user.get('id');
         this._connections[id] = this._pending_connections[connection_id];
         this._connections[id].user_id = id;
+
+        user.getConnection = function() {
+            return this._connections[id];
+        }.bind(this);
+
+        user.send = function(event, data) {
+            return this.send(event, data, id);
+        }.bind(this);
+
         delete this._pending_connections[connection_id];
 
         this.emit('authenticated', user);
@@ -210,6 +219,15 @@ Connection.prototype.onClose = function(client) {
  */
 Connection.prototype.bundle = function(bundle, id) {
     this.send('bundle', bundle, id);
+};
+
+/**
+ * Return the original sockjs connection object by user_id
+ * @param user_id
+ * @returns {object|null}
+ */
+Connection.prototype.getConnection = function(user_id) {
+    return (this._connections.hasOwnProperty(user_id)) ? this._connections[user_id] : null;
 };
 
 /**
