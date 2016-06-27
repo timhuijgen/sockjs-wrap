@@ -6,7 +6,7 @@ var beefy  = require('beefy'),
 
 console.log('Starting webserver with beefy');
 
-http.createServer(beefy('./')).listen(9966);
+http.createServer(beefy({cwd: './', bundler: 'browserify'})).listen(9966);
 
 console.log('Opening browser window: http://127.0.0.1:9966/examples/full/client.html');
 
