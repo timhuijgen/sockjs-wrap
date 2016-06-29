@@ -17,7 +17,9 @@ To install `sockjs-wrap` run:
     npm install sockjs-wrap
     
     
-Run the full example test:
+Run the full example:
+``` npm run example ```
+Run mocha tests:
 ``` npm test ```
 
 

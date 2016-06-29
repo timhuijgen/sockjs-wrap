@@ -7,7 +7,8 @@
     "example": "examples"
   },
   "scripts": {
-    "test": "node test.js"
+    "test": "mocha",
+    "example": "node example.js"
   },
   "keywords": [
     "sockjs",
@@ -47,6 +48,9 @@
   "devDependencies": {
     "beefy": "^2.1.8",
     "browserify": "^13.0.1",
-    "open": "0.0.5"
+    "chai": "^3.5.0",
+    "mocha": "^2.5.3",
+    "open": "0.0.5",
+    "sockjs-client": "^1.1.1"
   }
 }
